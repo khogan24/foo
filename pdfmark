@@ -38,3 +38,21 @@
 [ /Title (allocuvm)  /Page 29 /View [/Fit] /OUT pdfmark
 [ /Title (copyuvm)  /Page 31 /View [/Fit] /OUT pdfmark
 [ /Title (copyout)  /Page 31 /View [/Fit] /OUT pdfmark
+
+[ /Title (File System) /Count 4 /OUT pdfmark
+[ /Title (Files) /Count 2 /OUT pdfmark
+[ /Title (sys_write)  /Page 83 /View [/Fit] /OUT pdfmark
+[ /Title (filewrite)  /Page 82 /View [/Fit] /OUT pdfmark
+[ /Title (Inodes) /Count 3 /OUT pdfmark
+[ /Title (writei)  /Page 77 /View [/Fit] /OUT pdfmark
+[ /Title (bmap)  /Page 76 /View [/Fit] /OUT pdfmark
+[ /Title (balloc)  /Page 73 /View [/Fit] /OUT pdfmark
+[ /Title (Block I/O) /Count 1 /OUT pdfmark
+[ /Title (bread)  /Page 67 /View [/Fit] /OUT pdfmark
+[ /Title (Logging) /Count 5 /OUT pdfmark
+[ /Title (begin_op)  /Page 70 /View [/Fit] /OUT pdfmark
+[ /Title (end_op)  /Page 70 /View [/Fit] /OUT pdfmark
+[ /Title (write_log)  /Page 70 /View [/Fit] /OUT pdfmark
+[ /Title (log_write)  /Page 71  /View [/Fit] /OUT pdfmark
+[ /Title (commit)  /Page 71  /View [/Fit] /OUT pdfmark
+
