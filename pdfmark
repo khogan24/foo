@@ -56,3 +56,10 @@
 [ /Title (log_write)  /Page 71  /View [/Fit] /OUT pdfmark
 [ /Title (commit)  /Page 71  /View [/Fit] /OUT pdfmark
 
+[ /Title (Pipes) /Count 5 /OUT pdfmark
+[ /Title (sys_pipe)  /Page 87 /View [/Fit] /OUT pdfmark
+[ /Title (pipealloc)  /Page 87 /View [/Fit] /OUT pdfmark
+[ /Title (filealloc)  /Page 80 /View [/Fit] /OUT pdfmark
+[ /Title (piperead)  /Page 88 /View [/Fit] /OUT pdfmark
+[ /Title (pipewrite)  /Page 88 /View [/Fit] /OUT pdfmark
+
