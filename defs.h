@@ -120,7 +120,7 @@ void            wakeup(void*);
 void            yield(void);
 
 void            alarm(int);
-void            check_alarms(void);
+void            check_alarms(struct proc*);
 void            signal(int, void (*)(int));
 void            checksignals(struct trapframe *);
 void            fgproc(int);
@@ -192,5 +192,9 @@ void            switchkvm(void);
 int             copyout(pde_t*, addr_t, void*, uint64);
 void            clearpteu(pde_t *pgdir, char *uva);
 
+
+#define TICKS_PER_SECOND 100 // idk, lucky guess
+#define SIG_DFL 0
+#define SIG_IGN 1
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))

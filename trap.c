@@ -13,6 +13,7 @@ uint *idt;
 extern addr_t vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
+long seconds = 0;
 
 static void
 mkgate(uint *idt, uint n, addr_t kva, uint pl)
@@ -50,6 +51,8 @@ trap(struct trapframe *tf)
     if(cpunum() == 0){
       acquire(&tickslock);
       ticks++;
+      if(ticks % TICKS_PER_SECOND == 0)
+        seconds++;
       wakeup(&ticks);
       release(&tickslock);
     }

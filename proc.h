@@ -48,6 +48,7 @@ struct context {
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 enum signal { SIGINT=2, SIGKILL=9, SIGALRM=14 };
+#define TOTAL_NUMBER_OF_SIGNALS 26
 
 // Per-process state
 struct proc {
@@ -64,6 +65,10 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  long alarmtime;
+  int alarmset;
+  void (*signal_handler[TOTAL_NUMBER_OF_SIGNALS])(int,int);
+  int dispostion;
 
   enum signal signal_pending;  
 };

@@ -7,6 +7,9 @@
 #include "proc.h"
 #include "spinlock.h"
 
+
+int _kill(int);
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -17,6 +20,7 @@ static struct proc *initproc;
 int nextpid = 1;
 extern void forkret(void);
 extern void syscall_trapret(void);
+extern long seconds;
 
 static void wakeup1(void *chan);
 
@@ -73,8 +77,19 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->rip = (addr_t)forkret;
-
+  // p->disposition = {0x0}
+  p->alarmtime = -1;
+  p->alarmset = 0;
+  int i = 0;
+  for(; i < TOTAL_NUMBER_OF_SIGNALS; ++i)
+    p->signal_handler[i] = _kill; // lazy, should make syscall with trapframe
+  p->dispostion = 0;
   return p;
+}
+
+int _kill(int foo){
+  cprintf("killing");
+  kill(proc->pid,SIGKILL);
 }
 
 //PAGEBREAK: 32
@@ -411,9 +426,15 @@ wakeup1(void *chan)
 {
   struct proc *p;
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == SLEEPING && p->chan == chan)
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
+    }
+    if(p->alarmset){
+      check_alarms(p);
+    }
+  }
+    
 }
 
 // Wake up all processes sleeping on chan.
@@ -425,15 +446,28 @@ wakeup(void *chan)
   release(&ptable.lock);
 }
 
-
+//KEVIN HW7 pt1
 void
 alarm(int secs) {
-  cprintf("alarm did nothing\n");
+  if(!proc->killed)
+  {
+    proc->alarmtime = seconds + secs;
+    proc->alarmset = 1;
+  }
 }
 
 void
 signal(int signum, void (*handler)(int)) {
-  cprintf("In signal(), with number %d and handler %p\n",signum,handler);
+  if(signum == SIGKILL)// lmao nice try
+    return;
+  if(handler == SIG_DFL || handler == SIG_IGN){
+    proc->dispostion = handler;
+  } 
+  int ka = uva2ka(proc->pgdir, handler);
+  if(PTE_FLAGS(ka) | PTE_U)
+  {
+    proc->signal_handler[signum] = V2P(ka);// get user addr of signal
+  }
 }
 
 void
@@ -442,6 +476,26 @@ checksignals(struct trapframe *tf) {
     cprintf("got a signal, exiting\n");
     exit();
   }
+}
+
+void check_alarms(struct proc* p){
+  if(p->alarmtime != -1 && p->alarmtime <= seconds){
+    p->alarmset = 0;
+    p->alarmtime = -1;
+    p->signal_pending = SIGALRM;
+    if(p->dispostion == SIG_IGN){
+      return;
+    }
+    if(p->dispostion == SIG_DFL)
+    release(&ptable.lock);
+    kill(p->pid,SIGALRM);
+    acquire(&ptable.lock);
+    // int (*disp)(int) = p->signal_handler[SIGALRM];
+    // disp(SIGALRM);
+    // kill(p->pid,disp);// maybe use checksignals?
+
+  }
+
 }
 
 // Signal the process with the given pid and signal
